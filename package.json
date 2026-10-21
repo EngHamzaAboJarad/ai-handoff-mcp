@@ -1,6 +1,6 @@
 {
   "name": "ai-handoff-mcp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Local-first MCP server that lets one AI coding agent (Claude, Copilot, Cursor, ...) continue another agent's task from its last checkpoint",
   "mcpName": "io.github.EngHamzaAboJarad/ai-handoff-mcp",
   "type": "module",

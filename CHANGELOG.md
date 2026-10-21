@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.1
 
 - **Icon** (`assets/icon.svg`, `assets/icon.png` 256x256): in `server.json` for the MCP Registry and in the server's
   `serverInfo`, served from the repository. `server.json` validates against the official 2025-12-11 schema.
