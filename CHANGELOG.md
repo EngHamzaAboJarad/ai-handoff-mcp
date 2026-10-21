@@ -2,8 +2,8 @@
 
 ## 0.3.0 (beta)
 
-A beta: everything below is tested (189 tests) and measured (BENCHMARK.md), but so far only on Windows and
-without real-world usage. See "Known limitations".
+A beta: everything below is tested (189 tests, CI on Linux, macOS and Windows with Node 20 and 22) and measured
+(BENCHMARK.md), but without real-world usage yet. See "Known limitations".
 
 New: a practical usage guide in Arabic, [USAGE.ar.md](USAGE.ar.md) (install, daily use, settings recipes, common problems).
 
@@ -52,7 +52,8 @@ New: a practical usage guide in Arabic, [USAGE.ar.md](USAGE.ar.md) (install, dai
   `--large` a 20,000-file repository. No model, no network. README numbers come from it, and claims it could not
   support were corrected ("a typical brief is about 900 characters", "milliseconds" for hooks, "about a second"
   through npx).
-- **CI**: `.github/workflows/ci.yml` for Linux, macOS and Windows with Node 20 and 22.
+- **CI**: `.github/workflows/ci.yml` for Linux, macOS and Windows with Node 20 and 22. The test list is built by
+  `scripts/run-tests.mjs`, because neither cmd.exe nor Node 20 expands `test/*.test.ts`.
 
 ### Upgrading from 0.2.0
 - Re-run `ai-handoff-mcp init`: it refreshes the instructions block and writes a token profile. With the default
@@ -64,7 +65,6 @@ New: a practical usage guide in Arabic, [USAGE.ar.md](USAGE.ar.md) (install, dai
 - `SERVER_VERSION` moved to `src/version.ts`.
 
 ### Known limitations
-- Tests have only run on Windows so far; CI covers Linux and macOS once the repository is on GitHub.
 - Savings are measured as the context a resuming agent needs, not with a model in the loop.
 - The prompt gate was tuned on the corpus it is measured on: consistent, not proven on unseen prompts.
 - Cursor's follow-ups are reported as unreliable on Windows by Cursor's own forum; there the nudge may not arrive.

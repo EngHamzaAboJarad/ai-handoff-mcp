@@ -231,3 +231,61 @@ test("the timeline entry about a stop never contains credentials", async () => {
   assert.match(log, /loop guard stopped the agent/);
   assert.doesNotMatch(log, /SECRETSECRET/);
 });
+
+test("session lifecycle: sessions are isolated, a stopped one stays blocked, --guard off bypasses without touching state", async () => {
+  const { project, store } = await setup();
+  const session = (id: string) => caller(store, project, "claude", { session_id: id });
+  const verdict = (stdout: string) => {
+    if (!stdout) return "allow";
+    const out = JSON.parse(stdout);
+    return out.continue === false ? "stop" : out.hookSpecificOutput?.permissionDecision === "deny" ? "deny" : "other";
+  };
+  const read = (file: string) => ({ file_path: path.join(project, file) });
+  const s1 = session("s1");
+  const repeated: string[] = [];
+  for (let i = 0; i < 4; i++) repeated.push(verdict((await s1.pre("Read", read("a.txt"))).stdout));
+  assert.deepEqual(repeated, ["allow", "allow", "deny", "stop"], "repeatLimit 3 in one session");
+  assert.equal(verdict((await s1.pre("Read", read("other.txt"))).stdout), "deny", "a stopped session stays blocked, whatever the call");
+
+  const s2 = session("s2");
+  for (let i = 0; i < 2; i++) assert.equal(verdict((await s2.pre("Read", read("a.txt"))).stdout), "allow", "a new session inherits nothing");
+  assert.equal(verdict((await s2.pre("Read", read("other.txt"))).stdout), "allow", "and can work while s1 is stopped");
+
+  const statsBefore = await store.getStats(project);
+  assert.equal(verdict((await s1.pre("Read", read("a.txt"), { guard: "off" })).stdout), "allow", "--guard off bypasses even a stopped session");
+  const s3 = session("s3");
+  for (let i = 0; i < 5; i++) assert.equal(verdict((await s3.pre("Read", read("b.txt"), { guard: "off" })).stdout), "allow");
+  const sessions = await store.getGuardSessions(project);
+  assert.equal(sessions.s3, undefined, "--guard off records no state");
+  assert.equal(sessions.s1.halted, true, "and leaves the stopped session as it was");
+  assert.deepEqual(await store.getStats(project), statsBefore, "and counts nothing");
+  assert.match((await s3.prompt("fix it")).stdout, /block/, "the prompt gate is a separate protection and still works");
+  assert.equal(verdict((await s1.pre("Read", read("a.txt"))).stdout), "deny", "without --guard off, s1 is still stopped");
+
+  await s1.prompt("In a.txt change the header so that it says 2026");
+  assert.equal(verdict((await s1.pre("Read", read("a.txt"))).stdout), "allow", "the user's next prompt lets s1 work again");
+  const stats = await store.getStats(project);
+  assert.deepEqual([stats.loopDenied, stats.loopStopped], [1, 1], "counters are cumulative and count each event once");
+});
+
+test("--guard off on one hook command only covers that command; .ai-handoff.json turns the whole guard off", async () => {
+  const { project, store } = await setup();
+  const claude = caller(store, project, "claude");
+  const failing = { tool_name: "Bash", tool_input: { command: "npm test" }, hook_event_name: "PostToolUseFailure", error: "exit code 1" };
+  let warned = false;
+  for (let i = 0; i < 4 && !warned; i++) {
+    await claude.pre("Bash", { command: "npm test" }, { guard: "off" });
+    await claude.post({ tool_name: "Edit", tool_input: { file_path: path.join(project, `f${i}.ts`) } });
+    warned = /additionalContext/.test((await claude.post(failing)).stdout);
+  }
+  assert.ok(warned, "post-tool without --guard off still tracks repeated failures");
+
+  const { project: other, store: otherStore } = await setup();
+  await fs.writeFile(path.join(other, ".ai-handoff.json"), JSON.stringify({ loopGuard: { mode: "off" } }));
+  const off = caller(otherStore, other, "claude");
+  for (let i = 0; i < 6; i++) {
+    assert.equal((await off.pre("Bash", { command: "npm test" })).stdout, "");
+    assert.equal((await off.post(failing)).stdout, "", "the config file covers every hook");
+  }
+  assert.deepEqual(await otherStore.getGuardSessions(other), {}, "and no guard state is written at all");
+});

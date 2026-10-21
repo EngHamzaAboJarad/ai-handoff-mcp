@@ -205,7 +205,6 @@ Per project, in `.ai-handoff.json`:
 - VS Code hooks are **Preview** (VS Code 1.109+, `chat.useHooks`, workspace trust). Keep `chat.useClaudeHooks` off to avoid duplicate hooks. Hook formats of all hosts may change, and the adapters are covered by tests so changes are easy to spot.
 - Gemini CLI has been succeeded by Antigravity CLI. The Gemini adapter follows the Gemini CLI documentation.
 - Checkpoints are per machine. There's no sync, by design.
-- So far the tests have been run on Windows only. The CI workflow covers Linux and macOS once the repository is on GitHub.
 
 ## Development
 
@@ -216,7 +215,7 @@ npm run dev       # run from source
 npm run bench     # the measurements in BENCHMARK.md (-- --write updates the file, -- --large adds a 20,000-file repository)
 ```
 
-CI (`.github/workflows/ci.yml`) is set up to run `npm test` on Linux, macOS and Windows with Node 20 and 22 on every push and pull request.
+CI (`.github/workflows/ci.yml`) runs `npm test` on Linux, macOS and Windows with Node 20 and 22 on every push and pull request.
 
 ## Publishing
 
