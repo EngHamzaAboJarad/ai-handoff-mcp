@@ -3,6 +3,22 @@
   "name": "io.github.EngHamzaAboJarad/ai-handoff-mcp",
   "title": "AI Handoff",
   "description": "Let any AI coding agent continue another agent's task from its last checkpoint, locally.",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/EngHamzaAboJarad/ai-handoff-mcp/master/assets/icon.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "256x256"
+      ]
+    },
+    {
+      "src": "https://raw.githubusercontent.com/EngHamzaAboJarad/ai-handoff-mcp/master/assets/icon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": [
+        "any"
+      ]
+    }
+  ],
   "repository": {
     "url": "https://github.com/EngHamzaAboJarad/ai-handoff-mcp",
     "source": "github"

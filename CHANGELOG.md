@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **Icon** (`assets/icon.svg`, `assets/icon.png` 256x256): in `server.json` for the MCP Registry and in the server's
+  `serverInfo`, served from the repository. `server.json` validates against the official 2025-12-11 schema.
+- Loop guard tests for the session lifecycle (isolation, stopped sessions, `--guard off` without touching state or
+  counters) and for the scope of `--guard` versus `.ai-handoff.json`. No behaviour change.
+
 ## 0.3.0 (beta)
 
 A beta: everything below is tested (189 tests, CI on Linux, macOS and Windows with Node 20 and 22) and measured

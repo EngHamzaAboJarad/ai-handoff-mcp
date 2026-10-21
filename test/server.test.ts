@@ -274,3 +274,22 @@ test("reports a corrupted checkpoint as a tool error instead of crashing", async
   assert.match(result.text, /not valid JSON/);
   await close();
 });
+
+test("the server's icons are served from this repository, and server.json lists the same ones", async () => {
+  const { SERVER_ICONS } = await import("../src/version.js");
+  const { dataDir } = await tempProject();
+  const { client, close } = await connect(dataDir);
+  assert.deepEqual(client.getServerVersion()?.icons, SERVER_ICONS, "sent in serverInfo");
+  await close();
+  const root = path.resolve(import.meta.dirname, "..");
+  const registry = JSON.parse(await fs.readFile(path.join(root, "server.json"), "utf8"));
+  assert.deepEqual(registry.icons, SERVER_ICONS, "server.json and the server agree");
+  for (const icon of SERVER_ICONS) {
+    assert.match(icon.src, /^https:\/\/raw\.githubusercontent\.com\/EngHamzaAboJarad\/ai-handoff-mcp\/master\/assets\//);
+    assert.ok(icon.src.length <= 255, "the registry limit");
+    await fs.access(path.join(root, "assets", path.basename(icon.src)));
+  }
+  const png = await fs.readFile(path.join(root, "assets", "icon.png"));
+  assert.equal(png.subarray(1, 4).toString(), "PNG");
+  assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [256, 256], "the size server.json declares");
+});

@@ -1,3 +1,5 @@
+<img src="assets/icon.svg" width="96" height="96" alt="AI Handoff icon">
+
 # AI Handoff MCP
 
 **Your AI coding agent hits its usage limit mid-task. The next agent, from any vendor, continues from the exact stopping point, without a model call, without reading old sessions and without re-exploring the code.**

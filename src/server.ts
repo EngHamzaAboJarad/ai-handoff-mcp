@@ -19,7 +19,7 @@ import { defaultHost, hasInstructionsBlock, readProjectConfig } from "./hooks.js
 import { isExposed, tokenSettings, type TokenSettings } from "./tokens.js";
 import { REPO_FILE, writeRepoFile } from "./repo-file.js";
 
-import { SERVER_NAME, SERVER_VERSION } from "./version.js";
+import { SERVER_ICONS, SERVER_NAME, SERVER_VERSION } from "./version.js";
 
 export { SERVER_NAME, SERVER_VERSION };
 
@@ -124,7 +124,7 @@ export interface ServerOptions {
 }
 
 export function createServer(store = new HandoffStore(), options: ServerOptions = {}): McpServer {
-  const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
+  const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION, icons: SERVER_ICONS });
   const exposed = (tool: string) => isExposed(tool, options.tools ?? "all");
   const minimal = options.tools === "minimal";
 
