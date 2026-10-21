@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.EngHamzaAboJarad/ai-handoff-mcp",
+  "title": "AI Handoff",
+  "description": "Let any AI coding agent continue another agent's task from its last checkpoint, locally.",
+  "repository": {
+    "url": "https://github.com/EngHamzaAboJarad/ai-handoff-mcp",
+    "source": "github"
+  },
+  "version": "0.3.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "ai-handoff-mcp",
+      "version": "0.3.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

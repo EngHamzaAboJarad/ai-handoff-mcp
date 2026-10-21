@@ -1,0 +1,53 @@
+{
+  "name": "ai-handoff-mcp",
+  "version": "0.3.0",
+  "description": "Local-first MCP server that lets one AI coding agent (Claude, Copilot, Cursor, ...) continue another agent's task from its last checkpoint",
+  "mcpName": "io.github.EngHamzaAboJarad/ai-handoff-mcp",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "claude-code",
+    "github-copilot",
+    "vscode",
+    "agent-handoff",
+    "ai-agents"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EngHamzaAboJarad/ai-handoff-mcp.git"
+  },
+  "files": [
+    "dist/src/**/*.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "bin": {
+    "ai-handoff-mcp": "dist/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/src/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "npm run build && npm run typecheck && tsx --test --test-concurrency=1 test/*.test.ts",
+    "check:publish": "node scripts/check-publish.mjs",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test && node scripts/check-publish.mjs",
+    "typecheck": "tsc -p tsconfig.test.json",
+    "bench": "npm run build && tsx scripts/benchmark.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "ai-handoff": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "ai-handoff-mcp"]
+    }
+  }
+}
