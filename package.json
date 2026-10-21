@@ -34,7 +34,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/src/index.js",
     "dev": "tsx src/index.ts",
-    "test": "npm run build && npm run typecheck && tsx --test --test-concurrency=1 test/*.test.ts",
+    "test": "npm run build && npm run typecheck && node scripts/run-tests.mjs",
     "check:publish": "node scripts/check-publish.mjs",
     "prepack": "npm run build",
     "prepublishOnly": "npm test && node scripts/check-publish.mjs",
