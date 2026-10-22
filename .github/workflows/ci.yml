@@ -26,3 +26,30 @@ jobs:
       - run: npm ci
       # Build, typecheck and every test, including real shell hooks and a real stdio server process.
       - run: npm test
+
+  vscode-extension:
+    name: vscode-extension (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: vscode-extension
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            vscode-extension/package-lock.json
+      # The extension imports the shared source in ../src, whose dependencies live in the root.
+      - run: npm ci
+        working-directory: .
+      - run: npm ci
+      # Typecheck, the answers' tests, then the bundle and the VSIX it would publish.
+      - run: npm test
+      - run: npm run package

@@ -1,0 +1,74 @@
+{
+  "name": "ai-handoff",
+  "displayName": "AI Handoff",
+  "description": "@handoff in the chat: see where the last AI agent stopped, rate a prompt before you send it, and continue the task.",
+  "version": "0.1.0",
+  "publisher": "EngHamzaAboJarad",
+  "license": "MIT",
+  "type": "module",
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EngHamzaAboJarad/ai-handoff-mcp.git",
+    "directory": "vscode-extension"
+  },
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "keywords": [
+    "ai",
+    "handoff",
+    "copilot",
+    "claude",
+    "mcp",
+    "checkpoint"
+  ],
+  "activationEvents": [
+    "onChatParticipant:ai-handoff.handoff"
+  ],
+  "main": "./dist/extension.cjs",
+  "contributes": {
+    "chatParticipants": [
+      {
+        "id": "ai-handoff.handoff",
+        "name": "handoff",
+        "fullName": "AI Handoff",
+        "description": "Where the last AI agent stopped, and how to continue",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "resume",
+            "description": "Show where the last AI agent stopped (no model, no tokens)"
+          },
+          {
+            "name": "status",
+            "description": "Task, next step and what the guards did (no model, no tokens)"
+          },
+          {
+            "name": "check",
+            "description": "Rate a prompt before you send it (no model, no tokens)"
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node20 --external:vscode --outfile=dist/extension.cjs",
+    "typecheck": "tsc -p .",
+    "test": "npm run typecheck && node --import tsx --test test/answers.test.ts",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/vscode": "1.100.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}

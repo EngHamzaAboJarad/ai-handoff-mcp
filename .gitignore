@@ -6,3 +6,4 @@ dist/
 *.tgz
 # Personal MCP config with absolute local paths; see .mcp.json.example
 .mcp.json
+*.vsix
