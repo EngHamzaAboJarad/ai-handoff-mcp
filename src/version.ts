@@ -1,6 +1,6 @@
 /** Kept apart from server.ts so hook commands can print the version without loading the MCP SDK. */
 export const SERVER_NAME = "ai-handoff-mcp";
-export const SERVER_VERSION = "0.3.1";
+export const SERVER_VERSION = "0.4.0";
 
 /** Served from the repository; server.json lists the same icons for the MCP Registry (a test keeps them equal). */
 const ICON_BASE = "https://raw.githubusercontent.com/EngHamzaAboJarad/ai-handoff-mcp/master/assets";

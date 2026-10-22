@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0
 
 - **`@handoff` in every agent's chat** (Claude Code, Copilot, Cursor, Gemini CLI, Windsurf), answered by the prompt
   hook with the same code as the VS Code extension (`src/chat.ts`). `/resume`, `/status`, `/check` and `/help` never
