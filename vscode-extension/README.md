@@ -1,4 +1,4 @@
-# AI Handoff for VS Code
+# AI Handoff MCP for VS Code
 
 **`@handoff` in the chat: see where the last AI agent stopped, rate a prompt before you send it, and continue the task.**
 

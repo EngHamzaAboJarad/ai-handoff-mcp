@@ -1,6 +1,6 @@
 {
-  "name": "ai-handoff",
-  "displayName": "AI Handoff",
+  "name": "ai-handoff-mcp",
+  "displayName": "AI Handoff MCP",
   "description": "@handoff in the chat: see where the last AI agent stopped, rate a prompt before you send it, and continue the task.",
   "version": "0.1.0",
   "publisher": "EngHamzaAboJarad",
