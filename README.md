@@ -97,6 +97,21 @@ Everything that guards your credits runs **outside the model and costs 0 tokens*
 
 See the real numbers for a project: `ai-handoff-mcp tokens`
 
+### 6. `@handoff` in every agent's chat
+
+Type `@handoff` in the chat of Claude Code (terminal, VS Code or desktop), Copilot, Cursor, Gemini CLI or Windsurf, the way you would in Copilot with the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=EngHamzaAboJarad.ai-handoff-mcp). The prompt hook answers it, with the same code as the extension:
+
+| Type | What happens | Model / tokens |
+|---|---|---|
+| `@handoff /resume` | The brief the next agent gets | None: the hook answers and the prompt never reaches the model |
+| `@handoff /status` | Task, next step, last checkpoint, what the guards did | None |
+| `@handoff /check fix it` | How the prompt gate rates a prompt | None |
+| `@handoff` | The list of commands | None |
+| `@handoff /continue` | The agent continues the task, with the brief added to the prompt | The agent's turn |
+| `@handoff what is left?` | The agent answers from the brief | The agent's turn |
+
+The local answers appear as the hook's message, not as the assistant's reply. Cursor and Windsurf cannot add context from a prompt hook, so there `/continue` and questions point to "resume the task" instead.
+
 ## Supported agents
 
 | Agent | MCP tools | Auto-capture hooks | Prompt gate | Loop guard | Brief injected at start |

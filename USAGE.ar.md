@@ -143,6 +143,21 @@ Handoff:      1 briefs injected at session start (~511 tokens on average), 0 not
 Checkpoints:  1 written by agents; 0 nudges to record the intent
 ```
 
+## `@handoff` بأي شات وكيل
+
+اكتب `@handoff` بشات Claude Code (بالـ terminal أو بـ VS Code أو بالـ Desktop)، أو Copilot، أو Cursor، أو Gemini، أو Windsurf. بيشتغل متل إضافة VS Code بالزبط، لأنه الـ hook تبع البرومبت بيجاوب بنفس الكود:
+
+| اكتب | شو بيصير | التوكنز |
+|---|---|---|
+| `@handoff /resume` | الملخص اللي رح يوصل للوكيل الجاي | صفر: الـ hook بيجاوب والرسالة ما بتوصل للنموذج |
+| `@handoff /status` | المهمة، والخطوة الجاية، وآخر checkpoint، والعدادات | صفر |
+| `@handoff /check صلحها` | تقييم الفلتر للبرومبت | صفر |
+| `@handoff` | قائمة الأوامر | صفر |
+| `@handoff /continue` | الوكيل بيكمّل المهمة، والملخص بينضاف للرسالة | دور عادي للوكيل |
+| `@handoff شو ضايل؟` | الوكيل بيجاوب من الملخص | دور عادي للوكيل |
+
+الأجوبة اللي بصفر توكن بتطلع كرسالة من الـ hook، مش كرد من الوكيل. وبـ Cursor وWindsurf ما في `/continue` ولا أسئلة حرة، لأنهم ما بيقدروا يضيفوا الملخص للرسالة من الـ hook. هناك قلّه "resume the task".
+
 ## 7. وصفات إعدادات جاهزة
 
 كل الإعدادات بملف `.ai-handoff.json` بجذر المشروع. انسخ اللي بدك ياه بس:

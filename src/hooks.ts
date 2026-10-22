@@ -34,6 +34,7 @@ import {
 import { tokenSettings, type TokenSettings, type TokensConfig } from "./tokens.js";
 import { writeRepoFile } from "./repo-file.js";
 import { BLOCK_START } from "./init.js";
+import { briefFor, checkFor, CONTINUE_PROMPT, helpFor, parseHandoffCommand, statusFor, systemPromptFor, type ChatCommand } from "./chat.js";
 
 /**
  * Commands run by host hooks. One command line works for every host; `--host` only picks the output format.
@@ -378,6 +379,46 @@ function promptWarnOutput(host: Host, context: string, note?: string): HookResul
   return { stdout: json(note ? { ...output, systemMessage: note } : output) };
 }
 
+/**
+ * @handoff in any agent's chat, the way the VS Code extension answers it in Copilot. /resume, /status, /check and
+ * /help are answered here and the prompt never reaches the model (the host shows the answer as the hook's message).
+ * /continue and a question in the user's words do need the model: the prompt goes through with the brief added as
+ * context, on hosts that can add it.
+ */
+async function answerHandoff(
+  store: HandoffStore,
+  root: string,
+  input: HookInput,
+  host: Host,
+  handoff: { command: ChatCommand | null; rest: string },
+  options: HookOptions,
+  resetGuard: () => Promise<void>
+): Promise<HookResult> {
+  const local = (text: string) => promptBlockOutput(host, text);
+  switch (handoff.command) {
+    case "help":
+      return local(helpFor("text"));
+    case "status":
+      return local(await statusFor(root, store, "text"));
+    case "check":
+      return local(checkFor(handoff.rest, "text"));
+    case "resume":
+      return local((await briefFor(root, store, (options.env ?? process.env).AI_HANDOFF_TOKENS)).brief);
+  }
+  // Cursor and Windsurf cannot add context to a prompt, so the model would get "@handoff ..." without the brief.
+  if (host === "cursor" || host === "windsurf") {
+    return local(
+      "This agent cannot receive the brief from a hook, so @handoff /continue and questions are not available here. " +
+        "The brief is injected when a session starts; to continue, say \"resume the task\"."
+    );
+  }
+  const { brief } = await briefFor(root, store, (options.env ?? process.env).AI_HANDOFF_TOKENS);
+  const context = handoff.command === "continue" ? `${CONTINUE_PROMPT}\n\n${brief}` : systemPromptFor(brief);
+  // The prompt reaches the model: the user stepped in, as with any prompt.
+  await Promise.all([store.notePrompt(root, input.sessionId ?? null, true), resetGuard()]);
+  return promptWarnOutput(host, context);
+}
+
 async function screenPrompt(store: HandoffStore, root: string, input: HookInput, host: Host, options: HookOptions): Promise<HookResult> {
   const project = await readProjectConfig(root);
   const config = project.promptGate ?? {};
@@ -392,6 +433,8 @@ async function screenPrompt(store: HandoffStore, root: string, input: HookInput,
     }));
   };
   if (input.prompt === undefined) return promptAllowOutput(host);
+  const handoff = parseHandoffCommand(input.prompt);
+  if (handoff) return answerHandoff(store, root, input, host, handoff, options, () => resetGuard(ARABIC_TEXT.test(input.prompt ?? "") ? "ar" : "en"));
   if (mode === "off") {
     await resetGuard(ARABIC_TEXT.test(input.prompt) ? "ar" : "en");
     return promptAllowOutput(host);

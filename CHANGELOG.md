@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **`@handoff` in every agent's chat** (Claude Code, Copilot, Cursor, Gemini CLI, Windsurf), answered by the prompt
+  hook with the same code as the VS Code extension (`src/chat.ts`). `/resume`, `/status`, `/check` and `/help` never
+  reach the model; `/continue` and questions go to the agent with the brief added as context (not on Cursor and
+  Windsurf, which cannot add context from a prompt hook).
+
 ## 0.3.1
 
 - **Icon** (`assets/icon.svg`, `assets/icon.png` 256x256): in `server.json` for the MCP Registry and in the server's
